@@ -1,12 +1,37 @@
 import os 
 import time
 import shutil
+import requests
 from dotenv import load_dotenv
 
 
 load_dotenv()
 principal_folder = os.getenv('PRINCIPAL_FOLDER')
 
+
+
+def create_todo(template_id,description, amount):  
+  url = "https://todo-api.iconicmind.com/todo/createFromTemplate"
+  # Datos del formulario
+  data = {
+      "todo_template_id": (None, f"{template_id}"),  # Campo de texto
+      "with_variable_values": (None, f'{{"$[DESCRIPTION]": "{description}", "$[AMOUNT]": "${amount}"}}'),
+  }
+
+  # Archivo a enviar
+
+
+  # Enviar la solicitud POST
+  response = requests.post(url, files=data)
+  #print (response.json())
+  if response.status_code == 200:
+    
+    # Imprimir la respuesta
+    data = response.json()  
+    return data['result']['todo']['id']
+    
+  else:
+    return False
 
 def check_labcorp_folder(folder_path):
   
